@@ -1,6 +1,8 @@
 const express = require("express");
 const sliderModel = require("../models/slider");
+const AuthMiddleware = require("../middlewares/auth");
 const route = express.Router();
+route.use(AuthMiddleware);
 
 route.post("/addSlides", async (req, res) => {
   try {

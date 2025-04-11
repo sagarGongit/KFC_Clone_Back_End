@@ -1,8 +1,9 @@
 const express = require("express");
 const dealModel = require("../models/deals");
+const AuthMiddleware = require("../middlewares/auth");
 const route = express.Router();
 
-route.post("/adddeals", async (req, res) => {
+route.post("/adddeals",AuthMiddleware, async (req, res) => {
   try {
     const newDeal = req.body.map((deal) => ({
       ...deal,

@@ -1,8 +1,9 @@
 const express = require("express");
 const productModel = require("../models/product");
+const AuthMiddleware = require("../middlewares/auth");
 const route = express.Router();
 
-route.post("/addProduct/:category_id", async (req, res) => {
+route.post("/addProduct/:category_id",AuthMiddleware, async (req, res) => {
   const category_id = req.params.category_id;
   try {
     const product = req.body.map((products) => ({
@@ -22,7 +23,6 @@ route.post("/addProduct/:category_id", async (req, res) => {
 });
 
 route.get("/get-product", async (req, res) => {
-  // const category_id = req.params.id;
   try {
     const products = await productModel.find().populate("category");
     res.json({

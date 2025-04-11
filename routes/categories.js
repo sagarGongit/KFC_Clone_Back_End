@@ -1,8 +1,9 @@
 const express = require("express");
 const categoryModel = require("../models/menuCategories");
+const AuthMiddleware = require("../middlewares/auth");
 const route = express.Router();
 
-route.post("/addCategory", async (req, res) => {
+route.post("/addCategory", AuthMiddleware, async (req, res) => {
   const { title, description } = req.body;
   try {
     const newCategory = new categoryModel({
