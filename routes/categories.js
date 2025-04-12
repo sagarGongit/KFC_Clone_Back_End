@@ -21,4 +21,18 @@ route.post("/addCategory", AuthMiddleware, async (req, res) => {
   }
 });
 
+route.get("/get-categories", async (req, res) => {
+  try {
+    const category = await categoryModel.find();
+    res.json({
+      message: "categories fetched successfully!",
+      category,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
 module.exports = route;
