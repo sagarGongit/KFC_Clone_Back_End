@@ -2,9 +2,8 @@ const express = require("express");
 const sliderModel = require("../models/slider");
 const AuthMiddleware = require("../middlewares/auth");
 const route = express.Router();
-route.use(AuthMiddleware);
 
-route.post("/addSlides", async (req, res) => {
+route.post("/addSlides", AuthMiddleware, async (req, res) => {
   try {
     const newSlide = req.body.map((slide) => ({
       ...slide,
