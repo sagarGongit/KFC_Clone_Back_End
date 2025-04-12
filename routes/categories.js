@@ -23,7 +23,7 @@ route.post("/addCategory", AuthMiddleware, async (req, res) => {
 
 route.get("/get-categories", async (req, res) => {
   try {
-    const category = await categoryModel.find();
+    const category = await categoryModel.find().populate("products");
     res.json({
       message: "categories fetched successfully!",
       category,
