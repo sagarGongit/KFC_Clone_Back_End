@@ -12,6 +12,8 @@ const dealsRoute = require("./routes/deals");
 
 const server = express();
 server.use(express.json());
+server.use(cors({ origin: "*" }));
+server.use(helmet());
 
 server.use("/user", userRoute);
 server.use("/cart", cartRoute);
@@ -19,9 +21,6 @@ server.use("/product", productRoute);
 server.use("/category", categoryRoute);
 server.use("/slider", sliderRoute);
 server.use("/deal", dealsRoute);
-
-server.use(cors({ origin: "*" }));
-server.use(helmet());
 
 const PORT = process.env.PORT || 3000;
 
