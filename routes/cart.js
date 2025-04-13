@@ -91,7 +91,7 @@ route.patch("/update-item/:id", AuthMiddleware, async (req, res) => {
 });
 
 route.delete("/remove-item/:id", AuthMiddleware, async (req, res) => {
-  const item_id = req.params.id;
+  const item_id = new mongoose.Types.ObjectId(req.params.id);
   const user_id = req.id;
   try {
     const item = await cartModel.updateOne(
