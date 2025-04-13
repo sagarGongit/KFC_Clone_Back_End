@@ -2,6 +2,7 @@ const express = require("express");
 const cartModel = require("../models/cart");
 const AuthMiddleware = require("../middlewares/auth");
 const userModel = require("../models/user");
+const mongoose = require("mongoose");
 const route = express.Router();
 
 route.post("/addCart/:product_id", AuthMiddleware, async (req, res) => {
@@ -42,6 +43,7 @@ route.get("/get-cartItems", AuthMiddleware, async (req, res) => {
   const items = await cartModel
     .find({ user: user_id })
     .populate("items.product");
+
   if (!items) {
     return res.status(404).json({
       message: "Your Cart Is Empty!",
