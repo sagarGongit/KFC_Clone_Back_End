@@ -59,6 +59,35 @@ route.get("/get-cartItems", AuthMiddleware, async (req, res) => {
   }
 });
 
+route.patch("/update-item/:id", AuthMiddleware, async (req, res) => {
+  const item_id = req.params.id;
+  const user_id = req.id;
+  const { quantity } = req.body;
+  try {
+    const item = await cartModel.updateOne(
+      {
+        user: user_id,
+        "items._id": item_id,
+      },
+      {
+        $set: { "items.$.quantity": quantity },
+      }
+    );
+    if (item.modifiedCount == 0) {
+      return res.status(404).json({
+        message: "item not found not proceed to update !",
+      });
+    }
+    res.json({
+      message: "item updated successfully!",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+});
+
 route.delete("/remove-item/:id", AuthMiddleware, async (req, res) => {
   const item_id = req.params.id;
   const user_id = req.id;
