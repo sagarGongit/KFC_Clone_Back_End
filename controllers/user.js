@@ -42,7 +42,7 @@ const DecryptPayload = (payload) => {
 };
 
 const EncryptToken = (token) => {
-  const secretKey = process.env.DECRYPT_KEY;
+  const secretKey = process.env.ENCRYPT_TOKEN;
   if (!secretKey) {
     throw new Error("secret key not defined !");
   }
