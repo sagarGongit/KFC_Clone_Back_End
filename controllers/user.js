@@ -49,7 +49,7 @@ const UserSignIn = async (req, res) => {
     });
   }
   try {
-    const decrypted = await DecryptPayload(data);
+    const decrypted = DecryptPayload(data);
     const { email, password } = decrypted;
     const user = await userModel.findOne({ email });
     if (!user) {
