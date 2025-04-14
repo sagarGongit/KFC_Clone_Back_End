@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const CryptoJs = require("crypto-js");
 const userModel = require("../models/user");
 const tokenModel = require("../models/blacklistedTokens");
 
@@ -30,9 +31,26 @@ const RegisterUser = async (req, res) => {
   }
 };
 
+const DecryptPayload = (payload) => {
+  const secretKey = process.env.DECRYPT_KEY;
+  if (!secretKey) {
+    throw new Error("secretKey is not defined !");
+  }
+  const decryptByte = CryptoJs.AES.decrypt(payload, secretKey);
+  const decrypted = decryptByte.toString(CryptoJs.enc.Utf8);
+  return JSON.parse(decrypted);
+};
+
 const UserSignIn = async (req, res) => {
-  const { email, password } = req.body;
+  const { data } = req.body;
+  if (!data) {
+    return res.status(400).json({
+      message: "invalid data",
+    });
+  }
   try {
+    const decrypted = await DecryptPayload(data);
+    const { email, password } = decrypted;
     const user = await userModel.findOne({ email });
     if (!user) {
       return res.status(404).json({
