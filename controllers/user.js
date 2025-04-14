@@ -41,6 +41,15 @@ const DecryptPayload = (payload) => {
   return JSON.parse(decrypted);
 };
 
+const EncryptToken = (token) => {
+  const secretKey = process.env.DECRYPT_KEY;
+  if (!secretKey) {
+    throw new Error("secret key not defined !");
+  }
+  const encryptData = CryptoJs.AES.encrypt(token, secretKey);
+  return encryptData.toString();
+};
+
 const UserSignIn = async (req, res) => {
   const { data } = req.body;
   if (!data) {
@@ -65,11 +74,12 @@ const UserSignIn = async (req, res) => {
       process.env.SECRET_KEY,
       { expiresIn: "1h" }
     );
+    const encryptedToken = EncryptToken(token);
     const result = await bcrypt.compare(password, user.password);
     if (result) {
       return res.json({
         message: "login successful..",
-        token,
+        token: encryptedToken,
         name: user.name,
         user_id: user._id,
       });
