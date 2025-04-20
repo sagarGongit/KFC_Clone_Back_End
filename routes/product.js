@@ -23,8 +23,21 @@ route.post("/addProduct/:category_id", AuthMiddleware, async (req, res) => {
 });
 
 route.get("/get-product", async (req, res) => {
+  const { q, limit } = req.query;
+
+  const query = {};
+  const options = {};
+
+  if (q) {
+    query.title = new RegExp(q, "i");
+  }
+  if (limit) {
+    options.limit = limit || 10;
+  }
   try {
-    const products = await productModel.find().populate("category");
+    const products = await productModel
+      .find(query, null, options)
+      .populate("category");
     res.json({
       message: "product fetched successfully",
       products,
