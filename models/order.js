@@ -7,6 +7,7 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Transaction",
     },
+    amount: { type: Number, required: true },
     total_items: { type: mongoose.Schema.Types.ObjectId, ref: "Cart" },
   },
   { versionKey: false, timestamps: true }

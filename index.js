@@ -9,6 +9,7 @@ const productRoute = require("./routes/product");
 const categoryRoute = require("./routes/categories");
 const sliderRoute = require("./routes/slider");
 const dealsRoute = require("./routes/deals");
+const paymentRoute = require("./routes/payment");
 
 const server = express();
 server.use(express.json());
@@ -21,6 +22,7 @@ server.use("/product", productRoute);
 server.use("/category", categoryRoute);
 server.use("/slider", sliderRoute);
 server.use("/deal", dealsRoute);
+server.use("/payment", paymentRoute);
 
 const PORT = process.env.PORT || 3000;
 
