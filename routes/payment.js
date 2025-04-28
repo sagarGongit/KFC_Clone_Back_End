@@ -1,8 +1,10 @@
 const express = require("express");
 const paymentModel = require("../models/payment");
+const axios = require("axios");
 const crypto = require("crypto");
 const orderModel = require("../models/order");
 const cartModel = require("../models/cart");
+const AuthMiddleware = require("../middlewares/auth");
 const route = express.Router();
 
 const MERCHANT_KEY = "96434309-7796-489d-8924-ab56988a6076";
@@ -18,7 +20,7 @@ const redirectUrl = "http://localhost:8080/status";
 const successUrl = "http://localhost:5173/payment-success";
 const failureUrl = "http://localhost:5173/payment-failure";
 
-route.post("/create-order", async (req, res) => {
+route.post("/create-order", AuthMiddleware, async (req, res) => {
   const { amount } = req.body;
   const orderId = "TXN_" + Date.now();
 
@@ -36,13 +38,13 @@ route.post("/create-order", async (req, res) => {
   const newPayment = new paymentModel({
     transaction_id: orderId,
   });
+  await newPayment.save();
   const newOrder = new orderModel({
     user: req.id,
-    transaction_id: orderId,
+    transaction_id: newPayment._id,
     amount,
     total_items: userCartId._id,
   });
-  await newPayment.save();
   await newOrder.save();
 
   const payload = Buffer.from(JSON.stringify(paymentPayload)).toString(
@@ -77,7 +79,7 @@ route.post("/create-order", async (req, res) => {
   }
 });
 
-route.post("/status", async (req, res) => {
+route.post("/status", AuthMiddleware, async (req, res) => {
   const merchantTransactionId = req.query.id;
 
   const keyIndex = 1;
