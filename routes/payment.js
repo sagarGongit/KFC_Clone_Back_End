@@ -15,7 +15,7 @@ const MERCHANT_BASE_URL =
 const MERCHANT_STATUS_URL =
   "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status";
 
-const redirectUrl = "http://localhost:8080/status";
+const redirectUrl = `http://localhost:${process.env.PORT || 3000}/status`;
 
 const successUrl = "http://localhost:5173/payment-success";
 const failureUrl = "http://localhost:5173/payment-failure";
@@ -29,7 +29,7 @@ route.post("/create-order", AuthMiddleware, async (req, res) => {
     amount: amount * 100,
     merchantTransactionId: orderId,
     redirectUrl: `${redirectUrl}/?id=${orderId}`,
-    redirectMode: "POST",
+    redirectMode: "GET",
     paymentInstrument: {
       type: "PAY_PAGE",
     },
