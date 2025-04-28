@@ -7,29 +7,16 @@ const cartModel = require("../models/cart");
 const AuthMiddleware = require("../middlewares/auth");
 const route = express.Router();
 
-const MERCHANT_KEY = "96434309-7796-489d-8924-ab56988a6076";
-const MERCHANT_ID = "PGTESTPAYUAT86";
-
-const MERCHANT_BASE_URL =
-  "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/pay";
-const MERCHANT_STATUS_URL =
-  "https://api-preprod.phonepe.com/apis/pg-sandbox/pg/v1/status";
-
-const redirectUrl = `http://localhost:8080/status`;
-
-const successUrl = "http://localhost:5173/payment-success";
-const failureUrl = "http://localhost:5173/payment-failure";
-
 route.post("/create-order", AuthMiddleware, async (req, res) => {
   const { amount } = req.body;
   const orderId = "TXN_" + Date.now();
 
   const paymentPayload = {
-    merchantId: MERCHANT_ID,
+    merchantId: process.env.MERCHANT_ID,
     amount: amount * 100,
     merchantTransactionId: orderId,
-    redirectUrl: `${redirectUrl}/?id=${orderId}`,
-    redirectMode: "GET",
+    redirectUrl: `${process.env.REDIRECT_URL}/?id=${orderId}`,
+    redirectMode: "POST",
     paymentInstrument: {
       type: "PAY_PAGE",
     },
@@ -51,13 +38,13 @@ route.post("/create-order", AuthMiddleware, async (req, res) => {
     "base64"
   );
   const keyIndex = 1;
-  const string = payload + "/pg/v1/pay" + MERCHANT_KEY;
+  const string = payload + "/pg/v1/pay" + process.env.MERCHANT_KEY;
   const sha256 = crypto.createHash("sha256").update(string).digest("hex");
   const checksum = sha256 + "###" + keyIndex;
 
   const option = {
     method: "POST",
-    url: MERCHANT_BASE_URL,
+    url: process.env.MERCHANT_BASE_URL,
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
@@ -84,27 +71,27 @@ route.post("/status", AuthMiddleware, async (req, res) => {
 
   const keyIndex = 1;
   const string =
-    `/pg/v1/status/${MERCHANT_ID}/${merchantTransactionId}` + MERCHANT_KEY;
+    `/pg/v1/status/${process.env.MERCHANT_ID}/${merchantTransactionId}` +
+    process.env.MERCHANT_KEY;
   const sha256 = crypto.createHash("sha256").update(string).digest("hex");
   const checksum = sha256 + "###" + keyIndex;
 
   const option = {
     method: "GET",
-    url: `${MERCHANT_STATUS_URL}/${MERCHANT_ID}/${merchantTransactionId}`,
+    url: `${process.env.MERCHANT_STATUS_URL}/${process.env.MERCHANT_ID}/${merchantTransactionId}`,
     headers: {
       accept: "application/json",
       "Content-Type": "application/json",
       "X-VERIFY": checksum,
-      "X-MERCHANT-ID": MERCHANT_ID,
+      "X-MERCHANT-ID": process.env.MERCHANT_ID,
     },
   };
 
   axios.request(option).then((response) => {
     if (response.data.success === true) {
-      console.log("success..............")
-      return res.redirect(successUrl);
+      return res.redirect(process.env.SUCCESS_URL);
     } else {
-      return res.redirect(failureUrl);
+      return res.redirect(process.env.FAILURE_URL);
     }
   });
 });
