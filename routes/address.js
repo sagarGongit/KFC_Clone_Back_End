@@ -18,7 +18,9 @@ route.get("/get-address", AuthMiddleware, async (req, res) => {
       address,
     });
   } catch (error) {
-    console.log(error.message);
+    res.status(500).json({
+      error: error.message,
+    });
   }
 });
 
