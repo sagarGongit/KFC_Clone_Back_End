@@ -25,13 +25,12 @@ const userSchema = new mongoose.Schema(
       max: [25, "not exceed more than 25 charecters"],
       required: true,
     },
-    address: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Address",
-        default: [],
-      },
-    ],
+    address: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
+      required: true,
+    },
+
     cart: { type: mongoose.Schema.Types.ObjectId, ref: "Cart" },
   },
   { versionKey: false, timestamps: true }

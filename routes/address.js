@@ -36,7 +36,7 @@ route.post("/addAddress", AuthMiddleware, async (req, res) => {
       user_id,
     });
     await newAddress.save();
-    user.address.push(newAddress._id);
+    user.address = newAddress._id;
     await user.save();
     res.json({
       message: "address added successfully",
@@ -70,14 +70,7 @@ route.patch("/update-address/:id", AuthMiddleware, async (req, res) => {
 
 route.delete("/remove-address/:id", AuthMiddleware, async (req, res) => {
   const address_id = req.params.id;
-  const user_id = req.id;
   try {
-    await userModel.updateOne(
-      { _id: user_id },
-      {
-        $pull: { address: address_id },
-      }
-    );
     const deleted = await addressModel.findByIdAndDelete(address_id);
     res.json({
       message: "address deleted successfully",
