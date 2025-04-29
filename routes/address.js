@@ -70,7 +70,13 @@ route.patch("/update-address/:id", AuthMiddleware, async (req, res) => {
 
 route.delete("/remove-address/:id", AuthMiddleware, async (req, res) => {
   const address_id = req.params.id;
+  const user_id = req.id;
   try {
+    await userModel.findByIdAndUpdate(
+      user_id,
+
+      { address: null }
+    );
     const deleted = await addressModel.findByIdAndDelete(address_id);
     res.json({
       message: "address deleted successfully",
