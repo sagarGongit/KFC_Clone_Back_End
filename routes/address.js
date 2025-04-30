@@ -50,7 +50,7 @@ route.post("/addAddress", AuthMiddleware, async (req, res) => {
   }
 });
 
-route.patch("/update-address/:id", AuthMiddleware, async (req, res) => {
+route.put("/update-address/:id", AuthMiddleware, async (req, res) => {
   const address_id = req.params.id;
   try {
     const update = await addressModel.findByIdAndUpdate(
