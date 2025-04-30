@@ -11,6 +11,7 @@ const sliderRoute = require("./routes/slider");
 const dealsRoute = require("./routes/deals");
 const addressRoute = require("./routes/address");
 const paymentRoute = require("./routes/payment");
+const orderRoute = require("./routes/orders");
 
 const server = express();
 server.use(express.json());
@@ -25,6 +26,7 @@ server.use("/slider", sliderRoute);
 server.use("/deal", dealsRoute);
 server.use("/address", addressRoute);
 server.use("/payment", paymentRoute);
+server.use("/order", orderRoute);
 
 const PORT = process.env.PORT || 3000;
 
