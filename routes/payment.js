@@ -5,10 +5,12 @@ const crypto = require("crypto");
 const orderModel = require("../models/order");
 const cartModel = require("../models/cart");
 const AuthMiddleware = require("../middlewares/auth");
+const userModel = require("../models/user");
 const route = express.Router();
 
 route.post("/create-order", AuthMiddleware, async (req, res) => {
   const { amount } = req.body;
+  const user_id = req.id;
   const orderId = "TXN_" + Date.now();
 
   const paymentPayload = {
@@ -33,7 +35,17 @@ route.post("/create-order", AuthMiddleware, async (req, res) => {
     total_items: userCartId._id,
   });
   await newOrder.save();
-
+  const user = await userModel.findById(user_id);
+  let order = user.orders;
+  if (!order) {
+    order = await userModel.create({
+      orders: [],
+    });
+    user.orders = order._id;
+    await user.save();
+  }
+  user.orders.push(newOrder._id);
+  await user.save();
   const payload = Buffer.from(JSON.stringify(paymentPayload)).toString(
     "base64"
   );
