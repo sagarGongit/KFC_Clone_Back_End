@@ -104,7 +104,6 @@ const UserLogout = async (req, res) => {
     await newToken.save();
     return res.json({
       message: "user logout successfully",
-      blacklistToken: newToken,
     });
   } catch (error) {
     res.status(500).json({
