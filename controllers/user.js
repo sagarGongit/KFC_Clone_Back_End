@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const CryptoJs = require("crypto-js");
 const userModel = require("../models/user");
-const tokenModel = require("../models/blacklistedTokens");
+const blacklistModel = require("../models/blacklistedTokens");
 
 const RegisterUser = async (req, res) => {
   const { name, email, password, phone } = req.body;
@@ -98,7 +98,7 @@ const UserSignIn = async (req, res) => {
 const UserLogout = async (req, res) => {
   const token = req.headers.authorization.split(" ")[1];
   try {
-    const newToken = new tokenModel({
+    const newToken = new blacklistModel({
       token,
     });
     await newToken.save();
